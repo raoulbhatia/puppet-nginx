@@ -10,3 +10,6 @@ server {
   <% if (defined? @www_root)  %>
   root <%= @www_root %>;
   <% end %>
+
+  <% if @bool_redirect_to_ssl %>return 301 https://$host$request_uri;<% end %>
+

@@ -54,6 +54,7 @@ define nginx::resource::vhost(
   $ssl_client_cert     = undef,
   $ssl_verify_client   = undef,
   $ssl_key             = undef,
+  $redirect_to_ssl     = false,
   $proxy               = undef,
   $proxy_read_timeout  = '90',
   $proxy_set_header    = undef,
@@ -89,6 +90,9 @@ define nginx::resource::vhost(
   include nginx::params
 
   $bool_ssl_only = any2bool($ssl_only)
+  if ($ssl == 'present') {
+    $bool_redirect_to_ssl = any2bool($redirect_to_ssl)
+  }
   $bool_default_server = any2bool($default_server)
   $bool_ipv6_enable = any2bool($ipv6_enable)
 
