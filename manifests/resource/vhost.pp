@@ -219,6 +219,17 @@ define nginx::resource::vhost(
     notify  => $nginx::manage_service_autorestart,
     target  => $file_real,
   }
+
+  if ($ssl == 'present') {
+    concat::fragment { "${name}+78-fastcgi.tmp":
+      ensure  => $fastcgi,
+      order   => '78',
+      content => template($template_fastcgi),
+      notify  => $nginx::manage_service_autorestart,
+      target  => $file_real,
+     }
+   }
+
   concat::fragment { "${name}+99-ssl.tmp":
     ensure  => $ssl,
     order   => '99',
