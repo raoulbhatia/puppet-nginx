@@ -115,7 +115,7 @@ http {
 
   include /etc/nginx/conf.d/*.conf;
 
-  include /etc/nginx/sites-available/*.conf;
+  include /etc/nginx/sites-enabled/*.conf;
 }
 '
     end
