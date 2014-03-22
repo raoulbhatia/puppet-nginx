@@ -47,6 +47,7 @@ define nginx::resource::vhost(
   $ipv6_listen_port    = '80',
   $default_server      = false,
   $server_name         = $name,
+  $server_aliases      = '',
   $ssl                 = absent,
   $ssl_only            = false,
   $ssl_cert            = undef,
