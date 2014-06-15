@@ -102,6 +102,15 @@ define nginx::resource::vhost(
     default => $groupowner,
   }
 
+  # convert server_aliases to an array
+  $array_server_aliases = is_array($server_aliases) ? {
+    false => $server_aliases ? {
+      '' => [],
+      default => [$server_aliases],
+    },
+    default => $server_aliases,
+  }
+
   $file_real = "${nginx::vdir}/${name}.conf"
 
   # Some OS specific settings:
