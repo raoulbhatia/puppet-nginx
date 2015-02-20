@@ -48,6 +48,7 @@ define nginx::resource::location(
   $proxy_read_timeout = '90',
   $proxy_set_header   = ['Host $host', 'X-Real-IP $remote_addr', 'X-Forwarded-For $proxy_add_x_forwarded_for', 'X-Forwarded-Proto $scheme' ],
   $proxy_redirect     = undef,
+  $proxy_http_version = undef,
   $ssl                = false,
   $ssl_only           = false,
   $option             = undef,
