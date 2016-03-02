@@ -175,17 +175,17 @@ define nginx::resource::vhost(
   # Use the File Fragment Pattern to construct the configuration files.
   # Create the base configuration file reference.
 
-  concat::fragment { "${name}+00.tmp":
-    ensure  => $ensure,
-    order   => '00',
-    content => "# File managed by Puppet\n\n",
-    notify  => $nginx::manage_service_autorestart,
-    target  => $file_real,
+  if $ensure == present {
+    concat::fragment { "${name}+00.tmp":
+      order   => '00',
+      content => "# File managed by Puppet\n\n",
+      notify  => $nginx::manage_service_autorestart,
+      target  => $file_real,
+    }
   }
 
-  if $bool_ssl_only != true {
+  if $bool_ssl_only != true and $ensure == present {
     concat::fragment { "${name}+01.tmp":
-      ensure  => $ensure,
       order   => '01',
       content => template($template_header),
       notify  => $nginx::manage_service_autorestart,
@@ -193,36 +193,38 @@ define nginx::resource::vhost(
     }
 
 
-    concat::fragment { "${name}+68-fastcgi.tmp":
-      ensure  => $fastcgi,
-      order   => '68',
-      content => template($template_fastcgi),
-      notify  => $nginx::manage_service_autorestart,
-      target  => $file_real,
+    if $fastcgi == present {
+      concat::fragment { "${name}+68-fastcgi.tmp":
+        order   => '68',
+        content => template($template_fastcgi),
+        notify  => $nginx::manage_service_autorestart,
+        target  => $file_real,
+      }
     }
 
     # Create a proper file close stub.
-    concat::fragment { "${name}+69.tmp":
-      ensure  => $ensure,
-      order   => '69',
-      content => template($template_footer),
-      notify  => $nginx::manage_service_autorestart,
-      target  => $file_real,
+    if $ensure == present {
+      concat::fragment { "${name}+69.tmp":
+        order   => '69',
+        content => template($template_footer),
+        notify  => $nginx::manage_service_autorestart,
+        target  => $file_real,
+      }
     }
   }
 
   # Create SSL File Stubs if SSL is enabled
-  concat::fragment { "${name}+70-ssl.tmp":
-    ensure  => $ssl,
-    order   => '70',
-    content => template($template_ssl_header),
-    notify  => $nginx::manage_service_autorestart,
-    target  => $file_real,
+  if $ssl == present {
+    concat::fragment { "${name}+70-ssl.tmp":
+      order   => '70',
+      content => template($template_ssl_header),
+      notify  => $nginx::manage_service_autorestart,
+      target  => $file_real,
+    }
   }
 
-  if ($ssl == 'present') {
+  if ($ssl == 'present' and $fastcgi == present) {
     concat::fragment { "${name}+78-fastcgi.tmp":
-      ensure  => $fastcgi,
       order   => '78',
       content => template($template_fastcgi),
       notify  => $nginx::manage_service_autorestart,
@@ -230,11 +232,12 @@ define nginx::resource::vhost(
      }
    }
 
-  concat::fragment { "${name}+99-ssl.tmp":
-    ensure  => $ssl,
-    order   => '99',
-    content => template($template_footer),
-    notify  => $nginx::manage_service_autorestart,
-    target  => $file_real,
+  if $ssl == 'present' {
+    concat::fragment { "${name}+99-ssl.tmp":
+      order   => '99',
+      content => template($template_footer),
+      notify  => $nginx::manage_service_autorestart,
+      target  => $file_real,
+    }
   }
 }
