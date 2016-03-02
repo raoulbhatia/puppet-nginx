@@ -121,7 +121,7 @@ define nginx::resource::vhost(
       file { "${nginx::vdir_enable}/${name}.conf":
         ensure  => $manage_file,
         target  => $file_real,
-        require => [Package['nginx'], File[$file_real], ],
+        require => [Package['nginx'], Concat[$file_real], ],
         notify  => Service['nginx'],
       }
     }
